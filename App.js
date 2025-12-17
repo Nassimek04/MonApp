@@ -1,54 +1,25 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
+import 'react-native-reanimated';
+import React, { useContext } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
 
-import HomeScreen from "./screens/HomeScreen";
-import DetailsScreen from "./screens/DetailsScreen";
-import SettingsScreen from "./screens/SettingsScreen";
+import AuthProvider, { AuthContext } from './context/AuthContext';
+import AppDrawer from './navigation/AppDrawer';
+import LoginScreen from './screens/LoginScreen';
 
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
-
-function TabNavigator() {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarActiveTintColor: "blue",
-        tabBarInactiveTintColor: "gray",
-        tabBarIcon: ({ color, size }) => {
-          let iconName;
-
-          if (route.name === "Home") iconName = "home";
-          else if (route.name === "Settings") iconName = "settings";
-
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-      })}
-    >
-      <Tab.Screen name="Home" component={HomeScreen} options={{ title: "Maison" }} />
-      <Tab.Screen name="Settings" component={SettingsScreen} options={{ title: "Paramètres" }} />
-    </Tab.Navigator>
-  );
+function RootNavigator() {
+  const { user } = useContext(AuthContext);
+  return user ? <AppDrawer /> : <LoginScreen />;
 }
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Tabs"
-          component={TabNavigator}
-          options={{ headerTitle: "Mon Application" }}
-        />
-        <Stack.Screen
-          name="Details"
-          component={DetailsScreen}
-          options={{ headerTitle: "Details" }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <NavigationContainer>
+          <RootNavigator />
+        </NavigationContainer>
+      </GestureHandlerRootView>
+    </AuthProvider>
   );
 }
