@@ -1,25 +1,22 @@
-import 'react-native-reanimated';
-import React, { useContext } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
-
-import AuthProvider, { AuthContext } from './context/AuthContext';
-import AppDrawer from './navigation/AppDrawer';
-import LoginScreen from './screens/LoginScreen';
-
+import { NavigationContainer } from "@react-navigation/native";
+import AuthProvider, { AuthContext } from "./context/AuthContext";
+import AppDrawer from "./navigation/AppDrawer";
+import LoginScreen from "./screens/LoginScreen";
+import { useContext } from "react";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 function RootNavigator() {
-  const { user } = useContext(AuthContext);
-  return user ? <AppDrawer /> : <LoginScreen />;
+const { user } = useContext(AuthContext);
+return user ? <AppDrawer /> : <LoginScreen />;
 }
-
 export default function App() {
-  return (
-    <AuthProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <NavigationContainer>
-          <RootNavigator />
-        </NavigationContainer>
-      </GestureHandlerRootView>
-    </AuthProvider>
-  );
+return (
+ <Provider store={store}>
+ <AuthProvider>
+ <NavigationContainer>
+ <RootNavigator />
+ </NavigationContainer>
+ </AuthProvider>
+ </Provider>
+);
 }
